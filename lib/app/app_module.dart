@@ -7,6 +7,6 @@ class AppModule extends Module {
 
   @override
   void routes(RouteManager r) {
-    r.child('name', child: (context) => const HomePage());
+    r.child('/', child: (context) => const HomePage());
   }
 }
