@@ -7,6 +7,8 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Modular.setInitialRoute('/welcome');
+
     return MaterialApp.router(
       title: 'Offline first app',
       theme: SimpleTheme().defaultAppTheme(),

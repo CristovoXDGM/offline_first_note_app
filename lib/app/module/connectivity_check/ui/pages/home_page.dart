@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../components/custom_app_bar.dart';
+import '../components/todo_list_card.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    // const screenPercentage = 0.9;
-
     return Scaffold(
       appBar: const CustomAppBar(),
       floatingActionButton: FloatingActionButton(
@@ -33,26 +31,18 @@ class HomePage extends StatelessWidget {
               height: 20,
             ),
             Center(
-              child: Card(
-                clipBehavior: Clip.antiAlias,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: SizedBox(
-                  height: size.height / 2,
-                  width: size.width,
-                  child: ListView.builder(
-                    itemCount: 3,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: const Text('Teste'),
-                        leading: Checkbox.adaptive(
-                          value: true,
-                          onChanged: (onChanged) {},
-                        ),
-                      );
-                    },
-                  ),
+              child: TodoListCard(
+                child: ListView.builder(
+                  itemCount: 3,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: const Text('Teste'),
+                      leading: Checkbox.adaptive(
+                        value: true,
+                        onChanged: (onChanged) {},
+                      ),
+                    );
+                  },
                 ),
               ),
             )
