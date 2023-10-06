@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:offline_first_note_app/app/module/connectivity_check/data/repositories/get_todo_list_repository.dart';
 
 import '../components/custom_app_bar.dart';
 import '../components/todo_list_card.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late final IGetTodoListRepository getTodoListRepository;
+
+  @override
+  void initState() {
+    super.initState();
+    getTodoListRepository = GetTodoListRepository();
+
+    getTodoListRepository();
+  }
 
   @override
   Widget build(BuildContext context) {
