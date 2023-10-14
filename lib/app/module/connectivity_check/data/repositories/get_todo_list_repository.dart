@@ -1,29 +1,51 @@
-import 'package:offline_first_note_app/app/module/connectivity_check/data/adapters/todo_entity_adapter.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:offline_first_note_app/app/module/connectivity_check/data/datasources/network_db_datasource.dart';
 import 'package:offline_first_note_app/app/module/connectivity_check/domain/todo_entity.dart';
 import 'package:result_dart/result_dart.dart';
-import 'package:uno/uno.dart';
+
+import '../datasources/local_db_datasource.dart';
 
 abstract class IGetTodoListRepository {
-  AsyncResult<List<ToDoEntity>, Exception> call();
+  AsyncResult<List<ToDoEntity>, Exception> getTodos();
+  AsyncResult<Unit, Exception> updateTodos(List<ToDoEntity> todos);
 }
 
 class GetTodoListRepository implements IGetTodoListRepository {
-  final uno = Uno();
-  final url = 'https://jsonplaceholder.typicode.com/todos';
-  GetTodoListRepository();
+  final LocalToDosDataSource localToDosDataSource;
+  final NetworkToDosDataSource networkToDosDataSource;
+
+  GetTodoListRepository(
+    this.localToDosDataSource,
+    this.networkToDosDataSource,
+  );
 
   @override
-  AsyncResult<List<ToDoEntity>, Exception> call() async {
+  AsyncResult<List<ToDoEntity>, Exception> getTodos() async {
     try {
-      final response = await uno.get(url);
-
-      var todoList = List<Map<String, dynamic>>.from(response.data);
-
-      final lastREsult = todoList.map(TodoEntityAdapter.fromJson).toList();
-
-      return Result.success(lastREsult);
+      bool hasConnection = await InternetConnectionChecker().hasConnection;
+      late final result;
+      if (hasConnection) {
+        return result = networkToDosDataSource.getAllTodos();
+      }
+      return result = localToDosDataSource.getAllTodos();
     } on Exception catch (error) {
-      return Result.failure(error);
+      Result.failure(error);
+    }
+  }
+
+  @override
+  AsyncResult<Unit, Exception> updateTodos(List<ToDoEntity> todos) async {
+    try {
+      bool hasConnection = await InternetConnectionChecker().hasConnection;
+      if (hasConnection) {
+        final result = await networkToDosDataSource.updateTodos(todos);
+        return result;
+      } else {
+        final result = await localToDosDataSource.updateTodos(todos);
+        return result;
+      }
+    } on Exception catch (error) {
+      Result.failure(error);
     }
   }
 }
