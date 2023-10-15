@@ -23,13 +23,16 @@ class GetTodoListRepository implements IGetTodoListRepository {
   AsyncResult<List<ToDoEntity>, Exception> getTodos() async {
     try {
       bool hasConnection = await InternetConnectionChecker().hasConnection;
-      late final result;
+
       if (hasConnection) {
-        return result = networkToDosDataSource.getAllTodos();
+        final result = await networkToDosDataSource.getAllTodos();
+        return Result.success(result);
+      } else {
+        final result = await localToDosDataSource.getAllTodos();
+        return Result.success(result);
       }
-      return result = localToDosDataSource.getAllTodos();
     } on Exception catch (error) {
-      Result.failure(error);
+      return Result.failure(error);
     }
   }
 
@@ -38,14 +41,13 @@ class GetTodoListRepository implements IGetTodoListRepository {
     try {
       bool hasConnection = await InternetConnectionChecker().hasConnection;
       if (hasConnection) {
-        final result = await networkToDosDataSource.updateTodos(todos);
-        return result;
+        await networkToDosDataSource.updateTodos(todos);
       } else {
-        final result = await localToDosDataSource.updateTodos(todos);
-        return result;
+        await localToDosDataSource.updateTodos(todos);
       }
+      return Result.success(unit);
     } on Exception catch (error) {
-      Result.failure(error);
+      return Result.failure(error);
     }
   }
 }
