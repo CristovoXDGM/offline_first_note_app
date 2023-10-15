@@ -7,7 +7,8 @@ import '../datasources/local_db_datasource.dart';
 
 abstract class IGetTodoListRepository {
   AsyncResult<List<ToDoEntity>, Exception> getTodos();
-  AsyncResult<Unit, Exception> updateTodos(List<ToDoEntity> todos);
+  AsyncResult<Unit, Exception> updateTodosNetwork(List<ToDoEntity> todos);
+  AsyncResult<Unit, Exception> updateTodosLocal(List<ToDoEntity> todos);
 }
 
 class GetTodoListRepository implements IGetTodoListRepository {
@@ -37,14 +38,21 @@ class GetTodoListRepository implements IGetTodoListRepository {
   }
 
   @override
-  AsyncResult<Unit, Exception> updateTodos(List<ToDoEntity> todos) async {
+  AsyncResult<Unit, Exception> updateTodosNetwork(List<ToDoEntity> todos) async {
     try {
-      bool hasConnection = await InternetConnectionChecker().hasConnection;
-      if (hasConnection) {
-        await networkToDosDataSource.updateTodos(todos);
-      } else {
-        await localToDosDataSource.updateTodos(todos);
-      }
+      await networkToDosDataSource.updateTodos(todos);
+
+      return Result.success(unit);
+    } on Exception catch (error) {
+      return Result.failure(error);
+    }
+  }
+
+  @override
+  AsyncResult<Unit, Exception> updateTodosLocal(List<ToDoEntity> todos) async {
+    try {
+      await localToDosDataSource.updateTodos(todos);
+
       return Result.success(unit);
     } on Exception catch (error) {
       return Result.failure(error);

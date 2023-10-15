@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:offline_first_note_app/app/module/connectivity_check/data/repositories/get_todo_list_repository.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:offline_first_note_app/app/module/connectivity_check/ui/stores/home_page_states.dart';
+import 'package:offline_first_note_app/app/module/connectivity_check/ui/stores/home_page_store.dart';
 
 import '../components/custom_app_bar.dart';
 import '../components/todo_list_card.dart';
@@ -12,14 +14,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late final IGetTodoListRepository getTodoListRepository;
+  late final HomePageStore store;
 
   @override
   void initState() {
     super.initState();
-    getTodoListRepository = GetTodoListRepository();
-
-    getTodoListRepository();
+    store = context.read<HomePageStore>();
+    store.getAllTodos();
   }
 
   @override
@@ -48,18 +49,43 @@ class _HomePageState extends State<HomePage> {
             ),
             Center(
               child: TodoListCard(
-                child: ListView.builder(
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: const Text('Teste'),
-                      leading: Checkbox.adaptive(
-                        value: true,
-                        onChanged: (onChanged) {},
-                      ),
-                    );
-                  },
-                ),
+                child: ValueListenableBuilder(
+                    valueListenable: store,
+                    builder: (context, value, child) {
+                      if (value is SuccessRetrieveTodosHomePageState) {
+                        if (value.toDos.isEmpty) {
+                          const Center(
+                            child: Text('Empty list here'),
+                          );
+                        }
+
+                        return ListView.builder(
+                          itemCount: value.toDos.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(value.toDos[index].title),
+                              leading: Checkbox.adaptive(
+                                value: value.toDos[index].done,
+                                onChanged: (onChanged) {},
+                              ),
+                            );
+                          },
+                        );
+                      }
+                      if (value is ErrorHomePageState) {
+                        return Center(
+                          child: Text(value.message),
+                        );
+                      }
+                      if (value is LoadingHomePageState) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return const Center(
+                        child: Text('No notes here'),
+                      );
+                    }),
               ),
             )
           ],

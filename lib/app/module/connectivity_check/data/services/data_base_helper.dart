@@ -7,11 +7,9 @@ class DatabaseHelper {
 
   factory DatabaseHelper() => _instance;
 
-  late Database _db;
-
   Future<Database> get db async {
-    _db = await initDatabase();
-    return _db;
+    final db = await initDatabase();
+    return db;
   }
 
   DatabaseHelper.internal();
