@@ -6,11 +6,22 @@ class SimpleTheme {
         colorScheme: simpleLightScheme(),
         useMaterial3: true,
         checkboxTheme: customCheckBox,
+        elevatedButtonTheme: elevatedButtonTheme,
         scaffoldBackgroundColor: simpleLightScheme().background);
   }
 
-  ElevatedButtonThemeData get elevatedButtonTheme =>
-      const ElevatedButtonThemeData(style: ButtonStyle());
+  ElevatedButtonThemeData get elevatedButtonTheme => ElevatedButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(
+            simpleLightScheme().primary,
+          ),
+          shape: const MaterialStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
+            ),
+          ),
+        ),
+      );
 
   CheckboxThemeData get customCheckBox => CheckboxThemeData(
         side: BorderSide(

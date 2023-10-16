@@ -10,10 +10,6 @@ class TodoEntityAdapter {
     );
   }
 
-  bool coonvertToBool(value) {
-    return value == 0 ? false : true;
-  }
-
   static Map<String, dynamic> toMap(ToDoEntity todos) {
     return {
       'id': todos.id,

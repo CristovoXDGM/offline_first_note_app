@@ -22,7 +22,7 @@ class _WelcomePageState extends State<WelcomePage> {
             SizedBox(
               width: size.width * 0.7,
               height: 250,
-              child: Placeholder(),
+              child: const Placeholder(),
             ),
             const SizedBox(
               height: 20,
@@ -50,7 +50,8 @@ class _WelcomePageState extends State<WelcomePage> {
                 },
                 child: const Text(
                   'Get started',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),
                 ),
               ),
             ),
