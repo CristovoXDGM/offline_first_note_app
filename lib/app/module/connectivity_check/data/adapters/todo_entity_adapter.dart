@@ -3,19 +3,23 @@ import 'package:offline_first_note_app/app/module/connectivity_check/domain/todo
 class TodoEntityAdapter {
   static ToDoEntity fromMap(Map<String, dynamic> json) {
     return ToDoEntity(
-      userId: json['userId'],
       id: json['id'] ?? '',
       title: json['title'] ?? '',
-      done: json['done'] ?? false,
+      done: json['completed'] == 0 ? false : true,
+      userId: json['userId'],
     );
+  }
+
+  bool coonvertToBool(value) {
+    return value == 0 ? false : true;
   }
 
   static Map<String, dynamic> toMap(ToDoEntity todos) {
     return {
-      'userId': todos.userId,
       'id': todos.id,
       'title': todos.title,
-      'completed': todos.done,
+      'completed': todos.done ? 1 : 0,
+      'userId': todos.userId,
     };
   }
 }

@@ -20,7 +20,6 @@ class HomePageStore extends ValueNotifier<HomePageState> {
 
     response.fold((success) {
       value = SuccessRetrieveTodosHomePageState(toDos: success);
-      updateTodosLocal(success);
     }, (failure) {
       value = ErrorHomePageState(message: failure.toString());
     });

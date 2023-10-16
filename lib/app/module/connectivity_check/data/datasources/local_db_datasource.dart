@@ -1,5 +1,4 @@
 import 'package:offline_first_note_app/app/module/connectivity_check/data/services/data_base_helper.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../../domain/todo_entity.dart';
 import '../adapters/todo_entity_adapter.dart';
@@ -10,15 +9,13 @@ abstract class ILocalToDosDataSource {
 }
 
 class LocalToDosDataSource implements ILocalToDosDataSource {
-  final DatabaseHelper dbHelper;
-
-  LocalToDosDataSource(this.dbHelper);
+  LocalToDosDataSource();
 
   @override
   Future<List<ToDoEntity>> getAllTodos() async {
-    await dbHelper.initDatabase();
+    final databaseHelper = await DatabaseHelper.instance.database;
 
-    final todoList = await dbHelper.getTasks();
+    final todoList = await databaseHelper.query('tasks');
 
     final result = todoList.map(TodoEntityAdapter.fromMap).toList();
 
@@ -27,14 +24,9 @@ class LocalToDosDataSource implements ILocalToDosDataSource {
 
   @override
   Future<void> updateTodos(List<ToDoEntity> todos) async {
-    final db = await dbHelper.initDatabase();
-
-    Batch batch = db.batch();
-
+    final databaseHelper = await DatabaseHelper.instance.database;
     for (var element in todos) {
-      dbHelper.insertTask(TodoEntityAdapter.toMap(element));
+      await databaseHelper.insert('tasks', TodoEntityAdapter.toMap(element));
     }
-
-    batch.commit();
   }
 }

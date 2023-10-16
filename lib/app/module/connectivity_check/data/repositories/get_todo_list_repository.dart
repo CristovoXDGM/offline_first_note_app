@@ -12,8 +12,8 @@ abstract class IGetTodoListRepository {
 }
 
 class GetTodoListRepository implements IGetTodoListRepository {
-  final LocalToDosDataSource localToDosDataSource;
-  final NetworkToDosDataSource networkToDosDataSource;
+  final ILocalToDosDataSource localToDosDataSource;
+  final INetworkToDosDataSource networkToDosDataSource;
 
   GetTodoListRepository(
     this.localToDosDataSource,
